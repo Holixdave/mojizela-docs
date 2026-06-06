@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mojizela Docs — Developer & User Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --pink:    #FF2D87;
+  --purple:  #B400FF;
+  --cyan:    #00F5FF;
+  --black:   #000000;
+  --bg:      #070710;
+  --bg2:     #0d0d1f;
+  --bg3:     #12122a;
+  --surface: #1a1a30;
+  --border:  rgba(255,255,255,0.07);
+  --text:    #e8e8f0;
+  --subtle:  #7070a0;
+  --grad: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+::selection{background:var(--pink);color:#fff;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Manrope',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── Custom cursor ── */
+#cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--pink);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(255,45,135,0.4);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:all .12s ease;
+}
+body:has(a:hover) #cursor,
+body:has(button:hover) #cursor{width:24px;height:24px;background:var(--cyan);}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px;}
+
+/* ── Layout ── */
+.layout{display:flex;min-height:100vh;}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;height:100vh;
+  overflow-y:auto;z-index:100;
+  display:flex;flex-direction:column;
+  transition:transform .3s ease;
+}
+.sidebar-logo{
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.logo-mark{
+  width:36px;height:36px;
+  background:var(--grad);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;
+  flex-shrink:0;
+}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;}
+.logo-sub{font-size:11px;color:var(--subtle);margin-top:1px;}
+
+.search-wrap{padding:16px 16px 8px;}
+.search-box{
+  width:100%;background:var(--bg3);
+  border:1px solid var(--border);border-radius:10px;
+  padding:9px 14px 9px 36px;color:var(--text);font-size:13px;
+  font-family:'Manrope',sans-serif;outline:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237070a0' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:12px center;
+  transition:border-color .2s;
+}
+.search-box:focus{border-color:var(--pink);}
+.search-box::placeholder{color:var(--subtle);}
+
+.nav-section{padding:8px 0;}
+.nav-label{
+  padding:10px 24px 6px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--subtle);text-transform:uppercase;
+}
+.nav-item{
+  display:block;padding:8px 24px;
+  font-size:13px;font-weight:500;color:var(--subtle);
+  text-decoration:none;border-left:2px solid transparent;
+  transition:all .2s;cursor:none;
+  position:relative;overflow:hidden;
+}
+.nav-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,rgba(255,45,135,0.1),transparent);
+  transition:width .3s;
+}
+.nav-item:hover{color:var(--text);border-left-color:rgba(255,45,135,0.4);}
+.nav-item:hover::before{width:100%;}
+.nav-item.active{
+  color:var(--pink);border-left-color:var(--pink);
+  background:rgba(255,45,135,0.06);
+}
+.nav-badge{
+  display:inline-block;margin-left:8px;
+  padding:1px 7px;font-size:10px;font-weight:700;
+  border-radius:20px;background:rgba(255,45,135,0.15);
+  color:var(--pink);
+}
+
+/* ── Main content ── */
+.main{
+  margin-left:260px;flex:1;min-width:0;
+}
+
+/* ── Top bar ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(7,7,16,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:14px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-breadcrumb{font-size:13px;color:var(--subtle);}
+.topbar-breadcrumb span{color:var(--text);font-weight:600;}
+.topbar-actions{display:flex;gap:12px;align-items:center;}
+.version-pill{
+  padding:4px 12px;border-radius:20px;
+  border:1px solid var(--border);
+  font-size:11px;font-family:'JetBrains Mono',monospace;
+  color:var(--cyan);
+}
+.hamburger{display:none;background:none;border:none;cursor:pointer;color:var(--text);}
+
+/* ── Hero ── */
+.hero{
+  padding:80px 48px 60px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  top:-100px;right:-100px;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(180,0,255,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  bottom:-50px;left:200px;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(255,45,135,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:20px;
+  border:1px solid rgba(255,45,135,0.3);
+  background:rgba(255,45,135,0.07);
+  font-size:12px;font-weight:600;letter-spacing:0.5px;
+  color:var(--pink);margin-bottom:24px;
+}
+.hero-eyebrow svg{animation:spin 3s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.hero h1{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(36px,5vw,64px);line-height:1.05;
+  letter-spacing:-2px;margin-bottom:20px;
+}
+.grad-text{
+  background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-size:17px;color:var(--subtle);line-height:1.7;
+  max-width:560px;margin-bottom:36px;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{
+  padding:13px 28px;border-radius:12px;
+  background:var(--grad);border:none;
+  font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;
+  color:#fff;cursor:none;
+  box-shadow:0 8px 32px rgba(255,45,135,0.3);
+  transition:transform .2s,box-shadow .2s;
+  text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,45,135,0.4);}
+.btn-ghost{
+  padding:13px 28px;border-radius:12px;
+  border:1px solid var(--border);background:transparent;
+  font-family:'Manrope',sans-serif;font-size:15px;font-weight:600;
+  color:var(--text);cursor:none;text-decoration:none;display:inline-block;
+  transition:border-color .2s,background .2s;
+}
+.btn-ghost:hover{border-color:var(--purple);background:rgba(180,0,255,0.06);}
+
+/* ── Stat row ── */
+.stat-row{
+  display:flex;gap:0;
+  border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;margin:48px 48px 0;
+  background:var(--bg2);
+}
+.stat{
+  flex:1;padding:28px 32px;
+  border-right:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.stat:last-child{border-right:none;}
+.stat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--grad);opacity:0;transition:opacity .3s;
+}
+.stat:hover::before{opacity:1;}
+.stat-num{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:32px;
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:13px;color:var(--subtle);margin-top:4px;}
+
+/* ── Content sections ── */
+.content{padding:0 48px 80px;}
+
+.section{
+  padding:60px 0;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(30px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.section.visible{opacity:1;transform:translateY(0);}
+.section:last-child{border-bottom:none;}
+
+.section-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:16px;
+}
+.section h2{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(24px,3vw,38px);letter-spacing:-1px;
+  margin-bottom:16px;line-height:1.15;
+}
+.section p{
+  font-size:15px;color:var(--subtle);line-height:1.8;
+  max-width:680px;margin-bottom:24px;
+}
+
+/* ── Cards grid ── */
+.cards{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;margin-top:32px;
+}
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:28px;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--grad);opacity:0;
+  transition:opacity .3s;border-radius:16px;
+}
+.card:hover{
+  border-color:rgba(255,45,135,0.4);
+  transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(255,45,135,0.1);
+}
+.card:hover::before{opacity:0.03;}
+.card-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;font-size:20px;
+  background:rgba(255,45,135,0.1);
+}
+.card h3{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:16px;margin-bottom:8px;
+}
+.card p{font-size:13px;color:var(--subtle);line-height:1.7;}
+
+/* ── Code block ── */
+.code-wrap{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;margin:24px 0;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+.code-lang{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--cyan);font-weight:500;letter-spacing:1px;
+  text-transform:uppercase;
+}
+.code-copy{
+  background:none;border:1px solid var(--border);
+  padding:4px 12px;border-radius:6px;font-size:11px;
+  color:var(--subtle);cursor:none;
+  font-family:'Manrope',sans-serif;
+  transition:border-color .2s,color .2s;
+}
+.code-copy:hover{border-color:var(--cyan);color:var(--cyan);}
+pre{
+  padding:20px;overflow-x:auto;
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  line-height:1.7;color:#c0c0e0;
+}
+.kw{color:#ff79c6;}
+.str{color:#f1fa8c;}
+.fn{color:#50fa7b;}
+.cm{color:#6272a4;font-style:italic;}
+.num{color:#bd93f9;}
+.type{color:#8be9fd;}
+
+/* ── Step list ── */
+.steps{margin:32px 0;display:flex;flex-direction:column;gap:0;}
+.step{
+  display:flex;gap:20px;padding:24px 0;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateX(-20px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.step.visible{opacity:1;transform:translateX(0);}
+.step:last-child{border-bottom:none;}
+.step-num{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:10px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;
+  box-shadow:0 4px 16px rgba(255,45,135,0.3);
+}
+.step-body h4{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:16px;margin-bottom:6px;
+}
+.step-body p{font-size:14px;color:var(--subtle);line-height:1.7;}
+
+/* ── Table ── */
+.table-wrap{
+  overflow-x:auto;margin:24px 0;
+  border:1px solid var(--border);border-radius:14px;
+}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:rgba(255,255,255,0.03);}
+th{
+  padding:14px 20px;text-align:left;
+  font-size:12px;font-weight:700;letter-spacing:0.5px;
+  color:var(--subtle);text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+}
+td{
+  padding:14px 20px;font-size:14px;
+  border-bottom:1px solid var(--border);
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.pill{
+  display:inline-block;padding:2px 10px;border-radius:20px;
+  font-size:11px;font-weight:700;
+}
+.pill-green{background:rgba(0,245,100,0.1);color:#00f564;}
+.pill-pink{background:rgba(255,45,135,0.1);color:var(--pink);}
+.pill-cyan{background:rgba(0,245,255,0.1);color:var(--cyan);}
+.pill-purple{background:rgba(180,0,255,0.1);color:var(--purple);}
+
+/* ── Alert box ── */
+.alert{
+  display:flex;gap:14px;padding:18px 20px;
+  border-radius:12px;margin:20px 0;font-size:14px;line-height:1.7;
+  border-left:3px solid;
+}
+.alert-info{
+  background:rgba(0,245,255,0.06);border-color:var(--cyan);color:var(--text);
+}
+.alert-warn{
+  background:rgba(255,180,0,0.06);border-color:#ffb400;color:var(--text);
+}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+
+/* ── Feature showcase — horizontal scroll ── */
+.showcase-wrap{
+  overflow-x:auto;padding:32px 0;
+  scrollbar-width:none;-ms-overflow-style:none;
+  margin:0 -48px;padding-left:48px;
+}
+.showcase-wrap::-webkit-scrollbar{display:none;}
+.showcase-track{
+  display:flex;gap:16px;width:max-content;padding-right:48px;
+}
+.showcase-card{
+  width:280px;flex-shrink:0;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  cursor:none;
+}
+.showcase-card:hover{
+  transform:scale(1.03) translateY(-4px);
+  box-shadow:0 24px 60px rgba(180,0,255,0.15);
+}
+.showcase-thumb{
+  height:160px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:56px;
+}
+.showcase-thumb-feed{
+  background:linear-gradient(135deg,#0d0020,#200040);
+}
+.showcase-thumb-chat{
+  background:linear-gradient(135deg,#001020,#002040);
+}
+.showcase-thumb-live{
+  background:linear-gradient(135deg,#200010,#400020);
+}
+.showcase-thumb-pulse{
+  background:linear-gradient(135deg,#100020,#200030);
+}
+.showcase-thumb-ai{
+  background:linear-gradient(135deg,#001010,#002020);
+}
+.showcase-info{padding:20px;}
+.showcase-info h3{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:16px;margin-bottom:6px;
+}
+.showcase-info p{font-size:12px;color:var(--subtle);line-height:1.6;}
+
+/* ── Zoom section ── */
+.zoom-section{
+  margin:48px 0;padding:60px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:24px;text-align:center;position:relative;overflow:hidden;
+}
+.zoom-section::before{
+  content:'';position:absolute;
+  top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(180,0,255,0.08) 0%,transparent 60%);
+  animation:rotateBg 8s linear infinite;
+}
+@keyframes rotateBg{to{transform:rotate(360deg);}}
+.zoom-section h2{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:36px;
+  letter-spacing:-1px;margin-bottom:12px;position:relative;
+}
+.zoom-section p{color:var(--subtle);font-size:16px;position:relative;}
+.zoom-section .btn-primary{margin-top:28px;position:relative;}
+
+/* ── FAQ accordion ── */
+.faq{margin:32px 0;}
+.faq-item{
+  border:1px solid var(--border);border-radius:14px;
+  margin-bottom:8px;overflow:hidden;
+  transition:border-color .3s;
+}
+.faq-item:hover{border-color:rgba(255,45,135,0.3);}
+.faq-q{
+  width:100%;background:none;border:none;
+  padding:20px 24px;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:'Manrope',sans-serif;font-size:15px;font-weight:600;
+  color:var(--text);cursor:none;
+}
+.faq-arrow{
+  width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:transform .3s,background .3s,border-color .3s;
+  font-size:12px;
+}
+.faq-item.open .faq-arrow{
+  transform:rotate(180deg);
+  background:var(--pink);border-color:var(--pink);
+}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s ease,padding .4s ease;
+  font-size:14px;color:var(--subtle);line-height:1.8;
+  padding:0 24px;
+}
+.faq-item.open .faq-a{max-height:300px;padding:0 24px 20px;}
+
+/* ── Footer ── */
+.doc-footer{
+  border-top:1px solid var(--border);
+  padding:40px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-left{font-size:13px;color:var(--subtle);}
+.footer-left strong{color:var(--text);}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{
+  font-size:13px;color:var(--subtle);text-decoration:none;
+  transition:color .2s;cursor:none;
+}
+.footer-links a:hover{color:var(--pink);}
+
+/* ── Scroll progress bar ── */
+#progress-bar{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--grad);z-index:9999;
+  width:0%;transition:width .1s;
+}
+
+/* ── Mobile hamburger ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+  .hero{padding:48px 24px 40px;}
+  .content{padding:0 24px 60px;}
+  .stat-row{flex-direction:column;margin:32px 24px 0;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .stat:last-child{border-bottom:none;}
+  .topbar{padding:14px 24px;}
+  .doc-footer{padding:32px 24px;}
+  .zoom-section{padding:40px 24px;}
+}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.hero-eyebrow{animation:fadeUp .6s ease both;}
+.hero h1{animation:fadeUp .6s .1s ease both;}
+.hero-sub{animation:fadeUp .6s .2s ease both;}
+.hero-actions{animation:fadeUp .6s .3s ease both;}
+
+/* ── Gradient border trick ── */
+.grad-border{
+  position:relative;border-radius:16px;padding:1px;
+  background:var(--grad);display:inline-block;
+}
+.grad-border-inner{
+  background:var(--bg2);border-radius:15px;padding:20px 28px;
+}
+
+/* ── Inline tag ── */
+code{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  background:rgba(180,0,255,0.12);border-radius:5px;
+  padding:2px 7px;color:var(--cyan);
+}
+
+/* ── Page overlay for mobile ── */
+#overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);z-index:90;
+}
+#overlay.show{display:block;}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+<div id="overlay"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">M</div>
+    <div>
+      <div class="logo-text">Mojizela</div>
+      <div class="logo-sub">Documentation</div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <input class="search-box" type="text" placeholder="Search docs…" id="search-input"/>
+  </div>
+
+  <nav>
+    <div class="nav-section">
+      <div class="nav-label">Getting Started</div>
+      <a href="#overview"     class="nav-item active">Overview</a>
+      <a href="#quickstart"   class="nav-item">Quick Start</a>
+      <a href="#installation" class="nav-item">Installation</a>
+      <a href="#architecture" class="nav-item">Architecture</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Core Features</div>
+      <a href="#feed"      class="nav-item">Feed <span class="nav-badge">Video</span></a>
+      <a href="#messaging" class="nav-item">Messaging</a>
+      <a href="#pulse"     class="nav-item">Pulse Stories</a>
+      <a href="#live"      class="nav-item">Live</a>
+      <a href="#ai"        class="nav-item">AI <span class="nav-badge">New</span></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Platform</div>
+      <a href="#auth"         class="nav-item">Auth</a>
+      <a href="#storage"      class="nav-item">Storage</a>
+      <a href="#notifications" class="nav-item">Notifications</a>
+      <a href="#payments"     class="nav-item">Payments</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Reference</div>
+      <a href="#permissions" class="nav-item">Permissions</a>
+      <a href="#faq"         class="nav-item">FAQ</a>
+      <a href="mojizela-privacy.html" class="nav-item">Privacy Policy</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <div class="topbar-breadcrumb">Docs / <span id="breadcrumb-text">Overview</span></div>
+    </div>
+    <div class="topbar-actions">
+      <div class="version-pill">v1.0.0</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero" id="overview">
+    <div class="hero-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--pink)"><circle cx="12" cy="12" r="10"/></svg>
+      Official Documentation
+    </div>
+    <h1>Build on<br/><span class="grad-text">Mojizela</span></h1>
+    <p class="hero-sub">Everything you need to understand, integrate, and extend the Mojizela platform — feeds, messaging, live, pulse stories, AI, and payments.</p>
+    <div class="hero-actions">
+      <a href="#quickstart" class="btn-primary">Quick Start →</a>
+      <a href="#architecture" class="btn-ghost">Architecture</a>
+    </div>
+  </div>
+
+  <!-- Stat row -->
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-num">Flutter</div>
+      <div class="stat-label">Cross-platform · iOS & Android</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Firebase</div>
+      <div class="stat-label">Auth · Firestore · RTDB · FCM</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Supabase</div>
+      <div class="stat-label">Media storage · CDN delivery</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">Agora</div>
+      <div class="stat-label">Real-time live streaming</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- QUICK START -->
+    <div class="section" id="quickstart">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Quick Start
+      </div>
+      <h2>Get up and running</h2>
+      <p>Clone the repo, configure your Firebase project, and you'll have Mojizela running on your device in under 10 minutes.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Clone and install dependencies</h4>
+            <p>Clone the repository and run <code>flutter pub get</code> to install all packages.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Add your Firebase config</h4>
+            <p>Download <code>google-services.json</code> (Android) and <code>GoogleService-Info.plist</code> (iOS) from your Firebase console and place them in the correct directories.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Configure Supabase</h4>
+            <p>Update the Supabase URL and anon key in <code>main.dart</code>. Create the <code>media</code> storage bucket in your Supabase dashboard and set it to public.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Set up Agora for Live</h4>
+            <p>Create an Agora project, copy your App ID into <code>lib/core/services/agora_config.dart</code>, and enable the RTC engine.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Run the app</h4>
+            <p>Connect a device or emulator, then run <code>flutter run</code>. The native splash, intro screen, and auth flow will launch automatically.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARCHITECTURE -->
+    <div class="section" id="architecture">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Architecture
+      </div>
+      <h2>Tech stack</h2>
+      <p>Mojizela uses a layered architecture — UI, domain, data — with dependency injection via the service locator pattern.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Technology</th><th>Purpose</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>UI</td><td>Flutter 3.22+</td><td>Cross-platform UI, animations, navigation</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>State</td><td>Riverpod + Provider</td><td>Reactive state management</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Auth</td><td>Firebase Auth</td><td>Email, Google Sign-In, session management</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Database</td><td>Firestore</td><td>Users, posts, chats, lives, pulses</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Realtime</td><td>Firebase RTDB</td><td>Typing indicators, online presence</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Storage</td><td>Supabase</td><td>Video, image, audio CDN delivery</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Offline</td><td>SQLite + Hive</td><td>Chat cache, AI history, preferences</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Live</td><td>Agora RTC</td><td>Real-time audio/video streaming</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Push</td><td>FCM</td><td>Notifications, call alerts</td><td><span class="pill pill-green">Active</span></td></tr>
+            <tr><td>Payments</td><td>RevenueCat + Flutterwave</td><td>Subscriptions, in-app purchases</td><td><span class="pill pill-cyan">Beta</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">Dart · Project structure</span>
+          <button class="code-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre>lib/
+  core/
+    services/        <span class="cm">// Service locator, FCM, connectivity</span>
+    theme/           <span class="cm">// MojizelaColors, app theme</span>
+    repo/            <span class="cm">// Auth, video, live repositories</span>
+    db/              <span class="cm">// LocalDB (SQLite), cache manager</span>
+  features/
+    auth/            <span class="cm">// Login, register, email verification</span>
+    feed/            <span class="cm">// FeedScreen, VideoModel, FeedVideoItem</span>
+    pulse/           <span class="cm">// Pulse stories, PulseBar</span>
+    live/            <span class="cm">// LiveLobbyScreen, LiveFeedCard</span>
+    messaging/       <span class="cm">// PrivateChatScreen, GroupChatScreen</span>
+    intro/           <span class="cm">// IntroScreen (first-launch only)</span>
+  widgets/           <span class="cm">// Shared UI — AIChatScreen, FAB, etc.</span>
+  main.dart</pre>
+      </div>
+    </div>
+
+    <!-- FEED -->
+    <div class="section" id="feed">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        Feed
+      </div>
+      <h2>Video feed</h2>
+      <p>Mojizela's core loop — a vertical <code>PageView</code> of short videos and images, mixed with live cards, powered by a relevance-scored algorithm with shuffle.</p>
+
+      <!-- Horizontal scroll showcase -->
+      <div class="showcase-wrap">
+        <div class="showcase-track">
+          <div class="showcase-card">
+            <div class="showcase-thumb showcase-thumb-feed">🎬</div>
+            <div class="showcase-info">
+              <h3>For You Feed</h3>
+              <p>Algorithm-ranked videos based on engagement score, freshness, and relevance. Infinitely paginates via <code>loadMore()</code>.</p>
+            </div>
+          </div>
+          <div class="showcase-card">
+            <div class="showcase-thumb showcase-thumb-feed">👥</div>
+            <div class="showcase-info">
+              <h3>Following Feed</h3>
+              <p>Videos + reposts from accounts the user follows. Friend reposts surface with a repost tag overlay.</p>
+            </div>
+          </div>
+          <div class="showcase-card">
+            <div class="showcase-thumb showcase-thumb-live">🔴</div>
+            <div class="showcase-info">
+              <h3>Live Cards</h3>
+              <p>Active live streams injected every 5 videos in the feed. Viewer count and host avatar ring displayed.</p>
+            </div>
+          </div>
+          <div class="showcase-card">
+            <div class="showcase-thumb showcase-thumb-pulse">⚡</div>
+            <div class="showcase-info">
+              <h3>Pulse Bar</h3>
+              <p>24-hour stories overlaid at the top of the feed. Photo, video, text, and voice note pulse types.</p>
+            </div>
+          </div>
+          <div class="showcase-card">
+            <div class="showcase-thumb showcase-thumb-feed">📤</div>
+            <div class="showcase-info">
+              <h3>Post Share Sheet</h3>
+              <p>Share any post to private chats. Multi-select friends, confirm send, navigate to chat on success.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        <span>The feed never shows an error message on load failure — instead it shows a branded empty-state SVG illustration with a retry button. No network, no ugly stack trace.</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">Dart · FeedScreen core logic</span>
+          <button class="code-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="cm">// Load videos + lives concurrently</span>
+<span class="kw">final</span> results = <span class="kw">await</span> <span class="type">Future</span>.wait([
+  _activeTab == <span class="type">FeedTab</span>.forYou
+      ? videoRepo.<span class="fn">getVideos</span>()
+      : videoRepo.<span class="fn">getFollowingVideos</span>(),
+  liveRepo.<span class="fn">activeLives</span>().<span class="fn">first</span>
+      .<span class="fn">catchError</span>((_) =&gt; &lt;<span class="type">LiveModel</span>&gt;[]),
+]);
+
+<span class="cm">// Mix lives into feed every 5 videos</span>
+<span class="kw">if</span> (lives.isNotEmpty &amp;&amp; (i + <span class="num">1</span>) % <span class="num">5</span> == <span class="num">0</span>) {
+  items.<span class="fn">add</span>(<span class="type">_FeedItem</span>.<span class="fn">live</span>(lives[liveIdx++]));
+}</pre>
+      </div>
+    </div>
+
+    <!-- MESSAGING -->
+    <div class="section" id="messaging">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Messaging
+      </div>
+      <h2>Private & group chat</h2>
+      <p>Full-featured chat — optimistic bubble injection, offline SQLite cache, RTDB presence, media sending, reactions, replies, and voice notes.</p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Optimistic Messages</h3>
+          <p>Messages appear instantly in the bubble before Firestore confirms. Status icon updates from sending → sent → delivered → read.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💾</div>
+          <h3>SQLite Offline Cache</h3>
+          <p>All messages are written to local SQLite via <code>LocalDB</code>. Chats load instantly from cache even with no internet.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎤</div>
+          <h3>Voice Notes</h3>
+          <p>Record, preview, and send voice messages. Waveform visualizer, playback speed control, and seen indicator.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">😂</div>
+          <h3>Reactions</h3>
+          <p>Long-press any bubble to react with emoji. Skin tone support. Reaction counts shown on bubble corner.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">↩️</div>
+          <h3>Reply Threading</h3>
+          <p>Swipe right to reply to any message. Quoted bubble shows inside the reply with sender name and preview.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">📎</div>
+          <h3>Post Share Bubbles</h3>
+          <p>Posts shared from the feed render as rich bubbles with thumbnail, username, caption, and tap-to-play.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:32px;">
+        <table>
+          <thead>
+            <tr><th>Message Type</th><th>Firestore field</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>text</code></td><td><code>type: 'text'</code></td><td>Plain text, supports hashtag highlighting and link preview</td></tr>
+            <tr><td><code>image</code></td><td><code>type: 'image'</code></td><td>Photo from gallery or camera, stored on Supabase</td></tr>
+            <tr><td><code>video</code></td><td><code>type: 'video'</code></td><td>Short video clip, thumbnail auto-generated</td></tr>
+            <tr><td><code>audio</code></td><td><code>type: 'audio'</code></td><td>Voice note with duration stored in seconds</td></tr>
+            <tr><td><code>document</code></td><td><code>type: 'document'</code></td><td>PDF, DOCX, and other files via file_picker</td></tr>
+            <tr><td><code>gif</code></td><td><code>type: 'gif'</code></td><td>GIF via Klipy integration in emoji picker</td></tr>
+            <tr><td><code>call</code></td><td><code>type: 'call'</code></td><td>Voice/video call record with status and duration</td></tr>
+            <tr><td><code>post_share</code></td><td><code>type: 'post_share'</code></td><td>Feed post shared into chat with thumbnail and metadata</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PULSE -->
+    <div class="section" id="pulse">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Pulse
+      </div>
+      <h2>Pulse stories</h2>
+      <p>24-hour ephemeral content — photo, video, text cards, and voice note pulses. Each pulse expires automatically at creation time + 24h stored as a Firestore <code>Timestamp</code>.</p>
+
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <span>Pulses are NOT deleted from Firestore automatically — your Cloud Function or client-side filter on <code>expiresAt</code> must exclude expired entries. Always filter with <code>.where('expiresAt', isGreaterThan: Timestamp.now())</code>.</span>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">Dart · Creating a pulse</span>
+          <button class="code-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="kw">final</span> ref = _db.<span class="fn">collection</span>(<span class="str">'pulses'</span>).<span class="fn">doc</span>();
+<span class="kw">await</span> ref.<span class="fn">set</span>({
+  <span class="str">'id'</span>:        ref.id,
+  <span class="str">'userId'</span>:    uid,
+  <span class="str">'mediaUrl'</span>:  mediaUrl,
+  <span class="str">'mediaType'</span>: <span class="str">'video'</span>,   <span class="cm">// 'photo' | 'text' | 'audio'</span>
+  <span class="str">'caption'</span>:   caption,
+  <span class="str">'createdAt'</span>: <span class="type">FieldValue</span>.serverTimestamp(),
+  <span class="str">'expiresAt'</span>: <span class="type">Timestamp</span>.<span class="fn">fromDate</span>(
+      <span class="type">DateTime</span>.now().<span class="fn">add</span>(<span class="kw">const</span> <span class="type">Duration</span>(hours: <span class="num">24</span>))),
+  <span class="str">'viewedBy'</span>:  &lt;<span class="type">String</span>&gt;[],
+});</pre>
+      </div>
+    </div>
+
+    <!-- LIVE -->
+    <div class="section" id="live">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+        Live
+      </div>
+      <h2>Live streaming</h2>
+      <p>Real-time audio/video broadcasting via Agora RTC. Hosts go live from the Live Lobby; viewers join via feed cards. Host detection drives the avatar ring UI.</p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🎙️</div>
+          <h3>Agora RTC Engine</h3>
+          <p>Low-latency audio/video using <code>agora_rtc_engine ^6.5.3</code>. Channel tokens generated server-side or via temp token for dev.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">👁️</div>
+          <h3>Viewer Count</h3>
+          <p>Live viewer count stored on the Firestore <code>lives</code> doc and updated in real-time via RTDB presence counters.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">💍</div>
+          <h3>Avatar Ring</h3>
+          <p>User avatar gets a pulsing gradient ring when they're live. Ring color matches the Mojizela brand gradient.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI -->
+    <div class="section" id="ai">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg>
+        AI <span class="nav-badge" style="margin-left:4px">New</span>
+      </div>
+      <h2>AI chat</h2>
+      <p>Mojizela includes a built-in AI assistant powered by a Python backend at <code>python-backend-ai.onrender.com</code>. Conversation history is persisted locally via Hive.</p>
+
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">Dart · AI service call</span>
+          <button class="code-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="kw">final</span> aiService = <span class="type">NewAIService</span>(
+  baseUrl: <span class="str">'https://python-backend-ai.onrender.com'</span>,
+);
+
+<span class="cm">// Send a message — returns a stream of tokens</span>
+<span class="kw">await</span> aiService.<span class="fn">chat</span>(
+  messages: conversationHistory,
+  onToken: (token) =&gt; setState(() =&gt; _buffer += token),
+);</pre>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        <span>The AI FAB is globally mounted in <code>main.dart</code> via an <code>Overlay</code> entry. It hides automatically when navigating to the AI chat screen and reappears on return.</span>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <div class="section" id="auth">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Auth
+      </div>
+      <h2>Authentication flow</h2>
+      <p>Mojizela uses Firebase Auth with email/password and Google Sign-In. A shadow ban check runs on every login to enforce community guidelines.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>First launch → Intro screen</h4>
+            <p><code>shared_preferences</code> key <code>intro_seen</code> gates the intro. Once any CTA is tapped, it's marked seen and never shown again.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Auth choice → Login or Register</h4>
+            <p>Users choose Google SSO or email. Register requires username + email + password. Username is indexed with search keywords on Firestore.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Email verification gate</h4>
+            <p>Unverified email accounts are blocked from <code>HomeScreen</code> and redirected to <code>EmailVerificationScreen</code> with a resend option.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Shadow ban check on login</h4>
+            <p><code>_ensureUserIntegrity()</code> reads <code>isBanned</code> and <code>isShadowBanned</code> from the Firestore user doc. Banned accounts are signed out immediately.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERMISSIONS -->
+    <div class="section" id="permissions">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Permissions
+      </div>
+      <h2>Required permissions</h2>
+      <p>Mojizela requests the following device permissions at runtime using <code>permission_handler</code>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Permission</th><th>Platform</th><th>Feature</th><th>Required</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Camera</td><td>iOS + Android</td><td>Video recording, QR scanner, profile photo</td><td><span class="pill pill-pink">Required</span></td></tr>
+            <tr><td>Microphone</td><td>iOS + Android</td><td>Voice notes, live streaming, calls</td><td><span class="pill pill-pink">Required</span></td></tr>
+            <tr><td>Photo Library</td><td>iOS + Android</td><td>Media picker for posts and chat</td><td><span class="pill pill-pink">Required</span></td></tr>
+            <tr><td>Notifications</td><td>iOS + Android</td><td>Push notifications, call alerts</td><td><span class="pill pill-cyan">Recommended</span></td></tr>
+            <tr><td>Contacts</td><td>iOS + Android</td><td>Find friends by contact list</td><td><span class="pill pill-purple">Optional</span></td></tr>
+            <tr><td>Storage</td><td>Android ≤12</td><td>Save media to gallery</td><td><span class="pill pill-cyan">Recommended</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section" id="faq">
+      <div class="section-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FAQ
+      </div>
+      <h2>Frequently asked questions</h2>
+
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Why does the feed show an empty state instead of an error?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">Mojizela treats a failed feed load as a network issue — not a crash. A branded SVG illustration with a retry button is shown instead of a stack trace or generic error message. This keeps the UX polished and non-technical for end users.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            How does the anonymous username fallback work?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">If a user has no <code>displayName</code> or <code>username</code> in Firestore, <code>AnonUsernameService.of(uid)</code> generates a deterministic <code>User&lt;12digits&gt;</code> string by seeding <code>dart:math Random</code> with a hash of the uid. The same uid always produces the same number — no Firestore writes, fully device-side.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Can users be banned without seeing why?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">Yes — shadow banning sets <code>isShadowBanned: true</code> on the Firestore user doc. The <code>_ensureUserIntegrity()</code> check on login signs out the account and throws an exception with a "suspended" message. Regular bans use <code>isBanned: true</code> and show the same message.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            How are pulse stories deleted after 24 hours?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">Pulses are not auto-deleted. The <code>expiresAt</code> Timestamp is stored on the Firestore doc. All queries filter by <code>.where('expiresAt', isGreaterThan: Timestamp.now())</code> to exclude expired entries. A Cloud Function can optionally clean them up server-side on a schedule.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            What happens if the AI backend is down?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">The <code>NewAIService</code> wraps all requests in try/catch. If the backend at <code>python-backend-ai.onrender.com</code> is unreachable, an error message is shown in the chat bubble. The FAB is still visible and the user can retry once connectivity is restored.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            How do I contact Mojizela?
+            <div class="faq-arrow">▾</div>
+          </button>
+          <div class="faq-a">For all inquiries including developer questions, partnership requests, and account issues, email us at <strong>mojizela.softstudio@gmail.com</strong>. We aim to respond within 48 hours.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA zoom section -->
+    <div class="zoom-section">
+      <h2>Ready to <span class="grad-text">build</span>?</h2>
+      <p>Start with the Quick Start guide or dive straight into a specific feature.</p>
+      <a href="#quickstart" class="btn-primary">Get started →</a>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <div class="footer-left">
+      <strong>Mojizela</strong> Documentation · v1.0.0<br/>
+      <span>© 2025 Mojizela. All rights reserved.</span>
+    </div>
+    <div class="footer-links">
+      <a href="mojizela-privacy.html">Privacy Policy</a>
+      <a href="mailto:mojizela.softstudio@gmail.com">Contact</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+
+</main><!-- /main -->
+
+<script>
+// ── Cursor ──────────────────────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+function animCursor(){
+  cursor.style.left = mx+'px'; cursor.style.top = my+'px';
+  rx += (mx-rx)*.12; ry += (my-ry)*.12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// ── Progress bar ────────────────────────────────────────────────────────────
+const bar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  bar.style.width = (p*100)+'%';
+});
+
+// ── Sidebar mobile toggle ───────────────────────────────────────────────────
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+document.getElementById('overlay').addEventListener('click', toggleSidebar);
+
+// ── Active nav + breadcrumb on scroll ──────────────────────────────────────
+const sections = document.querySelectorAll('.section, .hero');
+const navItems = document.querySelectorAll('.nav-item');
+const bc = document.getElementById('breadcrumb-text');
+const labels = {
+  'overview':'Overview','quickstart':'Quick Start','installation':'Installation',
+  'architecture':'Architecture','feed':'Feed','messaging':'Messaging',
+  'pulse':'Pulse Stories','live':'Live','ai':'AI','auth':'Auth',
+  'storage':'Storage','notifications':'Notifications','payments':'Payments',
+  'permissions':'Permissions','faq':'FAQ'
+};
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const id = e.target.id;
+      navItems.forEach(n => n.classList.toggle('active', n.getAttribute('href')==='#'+id));
+      bc.textContent = labels[id] || 'Docs';
+    }
+  });
+}, {threshold:0.3});
+sections.forEach(s => observer.observe(s));
+
+// ── Section + step reveal on scroll ────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => {
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'), i*60);
+    }
+  });
+}, {threshold:0.1});
+document.querySelectorAll('.section,.step').forEach(el => revealObs.observe(el));
+
+// ── FAQ accordion ───────────────────────────────────────────────────────────
+function toggleFaq(btn){
+  const item = btn.parentElement;
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!open) item.classList.add('open');
+}
+
+// ── Copy code ───────────────────────────────────────────────────────────────
+function copyCode(btn){
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+// ── Search filter ──────────────────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', function(){
+  const q = this.value.toLowerCase();
+  navItems.forEach(item => {
+    const match = item.textContent.toLowerCase().includes(q);
+    item.style.display = match ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-label').forEach(l => l.style.display = q ? 'none' : '');
+});
+
+// ── Zoom on scroll for zoom-section ────────────────────────────────────────
+const zoomEl = document.querySelector('.zoom-section');
+if(zoomEl){
+  window.addEventListener('scroll', () => {
+    const rect = zoomEl.getBoundingClientRect();
+    const vh   = window.innerHeight;
+    if(rect.top < vh && rect.bottom > 0){
+      const progress = 1 - (rect.top / vh);
+      const scale = 0.92 + (progress * 0.08);
+      zoomEl.style.transform = `scale(${Math.min(scale,1)})`;
+    }
+  });
+}
+
+// ── Horizontal scroll drag ─────────────────────────────────────────────────
+const track = document.querySelector('.showcase-wrap');
+if(track){
+  let isDown=false, startX, scrollLeft;
+  track.addEventListener('mousedown', e=>{
+    isDown=true; startX=e.pageX-track.offsetLeft;
+    scrollLeft=track.scrollLeft; track.style.cursor='grabbing';
+  });
+  track.addEventListener('mouseleave',()=>{isDown=false;track.style.cursor='';});
+  track.addEventListener('mouseup',()=>{isDown=false;track.style.cursor='';});
+  track.addEventListener('mousemove',e=>{
+    if(!isDown)return; e.preventDefault();
+    const x=e.pageX-track.offsetLeft;
+    track.scrollLeft=scrollLeft-(x-startX)*1.4;
+  });
+}
+</script>
+</body>
+</html>
